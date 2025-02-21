@@ -13,10 +13,12 @@ public class GameStateManager : MonoBehaviour
     public enum GameState
     { 
         // Different gamestates 
-        MainMenu_State, Gameplay_State, Paused_State, Credit_State
+        MainMenu_State, Gameplay_State, Paused_State, Credit_State, Option_State
     }
 
     public GameState currentState { get; private set; }
+
+    private GameState lastState;
 
     [SerializeField] private string currentStateDebug;
     [SerializeField] private string lastStateDebug;
@@ -29,7 +31,7 @@ public class GameStateManager : MonoBehaviour
 
     public void ChangeState(GameState newState)
     {
-        lastStateDebug = currentState.ToString();
+        lastState = currentState;
 
         currentState = newState;
 
@@ -46,7 +48,7 @@ public class GameStateManager : MonoBehaviour
             {
                 Pause();
             }
-            else if (currentState == GameState.Paused_State)
+            else if (Input.GetKeyDown(KeyCode.Escape) && currentState == GameState.Paused_State)
             {
                 Resume();
             }
@@ -60,6 +62,11 @@ public class GameStateManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.C) && currentState == GameState.MainMenu_State)
         {
             ChangeStateToCredit();
+        }
+
+        if (Input.GetKeyDown(KeyCode.O) && currentState == GameState.MainMenu_State)
+        {
+            ChangeStateToOption();
         }
     }
 
@@ -91,6 +98,13 @@ public class GameStateManager : MonoBehaviour
                 Debug.Log("Switched to Main Menu screen");
                 break;
 
+            case GameState.Option_State:
+                Time.timeScale = 0f;
+                gameManager.uiManager.EnableOptions();
+                Debug.Log("Switched to Main Menu screen");
+                break;
+
+
         }
     }
 
@@ -102,8 +116,8 @@ public class GameStateManager : MonoBehaviour
 
     public void Resume()
     {
+        gameManager.levelManager.LoadSceneToSpawnPosition("Map1", null);
         ChangeState(GameState.Gameplay_State);
-        Time.timeScale = 1f;
     }
 
     public void Pause()
@@ -120,6 +134,16 @@ public class GameStateManager : MonoBehaviour
     public void ChangeStateToCredit()
     {
         ChangeState(GameState.Credit_State);
+    }
+
+    public void ChangeStateToOption()
+    {
+        ChangeState(GameState.Option_State);
+    }
+
+    public void ChangeToLastState()
+    {
+        ChangeState(lastState);
     }
 
     // Referenced quit game method from previous project, closes game to desktop.

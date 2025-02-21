@@ -11,6 +11,7 @@ public class UIManager : MonoBehaviour
     public GameObject gameplayUI;
     public GameObject pauseUI;
     public GameObject creditUI;
+    public GameObject optionUI;
 
     public void EnableMainMenu()
     {
@@ -35,11 +36,19 @@ public class UIManager : MonoBehaviour
         creditUI.SetActive(true);
     }
 
+    public void EnableOptions()
+    {
+        DisableAll();
+        optionUI.SetActive(true);
+    }
+
+
     public void DisableAll()
     {
         mainMenuUI.SetActive(false);
         gameplayUI.SetActive(false);
         pauseUI.SetActive(false);
         creditUI.SetActive(false);
+        optionUI.SetActive(false);
     }
 }
